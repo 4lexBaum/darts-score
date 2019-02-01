@@ -17,22 +17,22 @@ if ('webkitSpeechRecognition' in window) {
 		}
 	}
 
-	// speech.onerror = function (event) {
-	// 	console.log(event);
-	// }
+	speech.onerror = function (event) {
+		console.log(event);
+	}
 
-	// speech.onaudioend = function () {
-	// 	console.log('Audio capturing ended');
-	// }
+	speech.onaudioend = function () {
+		console.log('Audio capturing ended');
+	}
 
-	// speech.onspeechend = function () {
-	// 	console.log('Speech ended');
-	// }
+	speech.onspeechend = function () {
+		console.log('Speech ended');
+	}
 
-	// speech.onend = function () {
-	// 	console.log('Ended');
-	// 	this.start();
-	// }
+	speech.onend = function () {
+		console.log('Ended');
+		this.start();
+	}
 
 	let start = 501;
 	const BOGEYS = [169, 168, 166, 165, 163, 162, 159];
