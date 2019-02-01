@@ -1,27 +1,15 @@
-/* * {
-    font-family: Helvetica;
-    color: #fff;
-    text-align: center;
-}
-
 body {
-    background-color: #009DE0;
-    margin: 0;
-}
-
-.count {
-    font-size: 20rem;
-    top: 0;
-    position: absolute;
-    left: 0;
-    right: 0;
-}
- */
-
- body {
 	padding-top: 5rem;
-  }
-  .starter-template {
+}
+.starter-template {
 	padding: 3rem 1.5rem;
 	text-align: center;
-  }
+}
+
+.container {
+	width: 50%;
+	margin-bottom: 1rem;
+}
+.container span {
+	margin: 0 0.5rem;
+}

@@ -87,15 +87,32 @@
 			<p class="lead">Say <em>reset</em> to go back to <b>501</b> and start a new game. With <em>back</em> you invalidate
 				your
 				latest throw.</p>
-			<div>
+			<button id="startBtn"
+			 class="btn btn-primary">Game On</button>
+			<div id="game"
+			 style="display: none;">
 				<h1 id="counter"
 				 class="display-1">501</h1>
+				<h5 id="average"
+				 class="display-5">Ø 0</h5>
+				<div class="container">
+					<div id="checkouts"
+					 class="row">
+					</div>
+				</div>
 				<ul id="list"
 				 class="list-group list-group-flush">
 
 				</ul>
 			</div>
+			<audio id="noScoreSounc"
+			 src="./soundpack/00.mp3"></audio>
+			<audio id="gameOnSound"
+			 src="./soundpack/gameon.mp3"></audio>
+			<audio id="gameShot"
+			 src="./soundpack/gameshot.mp3"></audio>
 		</div>
+
 
 	</main><!-- /.container -->
 	<script src="./js/script.js"></script>
