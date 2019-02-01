@@ -17,6 +17,18 @@ if ('webkitSpeechRecognition' in window) {
 		}
 	}
 
+	speech.onerror = function (event) {
+		console.log(event);
+	}
+
+	speech.onaudioend = function () {
+		console.log('Audio capturing ended');
+	}
+
+	speech.onspeechend = function () {
+		console.log('Speech ended');
+	}
+
 	speech.onend = function () {
 		console.log('Ended');
 		this.start();
