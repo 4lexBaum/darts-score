@@ -606,37 +606,47 @@ if ('webkitSpeechRecognition' in window) {
 		}
 	};
 
+	const voice = document.querySelector("#voice");
+
 	speech.onaudiostart = function () {
 		console.log('Audio capturing started');
+		voice.textContent = "Listening...";
 	}
 
 	speech.onaudioend = function () {
 		console.log('Audio capturing ended');
+		voice.textContent = "";
 	}
 
 	speech.onsoundstart = function () {
 		console.log('Some sound is being received');
+		voice.textContent = "Sound receiving...";
 	}
 
 	speech.onsoundend = function () {
 		console.log('Sound has stopped being received');
+		voice.textContent = "";
 	}
 
 	speech.onspeechstart = function () {
 		console.log('Speech has been detected');
+		voice.textContent = "Speech receiving...";
 	}
 
 	speech.onspeechend = function () {
 		this.stop();
 		console.log('Speech has stopped being detected');
+		voice.textContent = "";
 	}
 
 	speech.onstart = function () {
 		console.log('Speech recognition service has started');
+		voice.textContent = "Speech recognition has started";
 	}
 
 	speech.onend = function () {
 		console.log('Speech recognition service disconnected');
+		voice.textContent = "Speech recognition has started";
 		this.start();
 	}
 
