@@ -564,7 +564,7 @@ if ('webkitSpeechRecognition' in window) {
 
 	const speech = new webkitSpeechRecognition();
 	speech.lang = "de-DE";
-	speech.continuous = true;
+	speech.continuous = false;
 	speech.interimResults = false;
 	speech.maxAlternatives = 10;
 
@@ -627,6 +627,7 @@ if ('webkitSpeechRecognition' in window) {
 	}
 
 	speech.onspeechend = function () {
+		this.stop();
 		console.log('Speech has stopped being detected');
 	}
 
