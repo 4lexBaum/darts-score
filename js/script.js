@@ -563,37 +563,84 @@ if ('webkitSpeechRecognition' in window) {
 	}
 
 	const speech = new webkitSpeechRecognition();
-	speech.lang = "en-US";
+	speech.lang = "de-DE";
 	speech.continuous = true;
-	speech.interimResults = true;
+	speech.interimResults = false;
 	speech.maxAlternatives = 10;
 
 	speech.onresult = function (event) {
+
 		for (let i = event.resultIndex; i < event.results.length; ++i) {
 			if (event.results[i].isFinal) {
-				const sTranscript = event.results[i][0].transcript;
-				processTranscript(sTranscript);
-				console.log(`Result received: ${sTranscript}`);
-				console.log(`Confidence: ${event.results[i][0].confidence}`);
+				const alternatives = event.results[i];
+				for (let j = 0; j < alternatives.length; ++j) {
+					const sTranscript = alternatives[j].transcript;
+					console.log(`Result received: ${sTranscript}`);
+					if (isInGramar(alternatives[j].transcript)) {
+						processTranscript(sTranscript);
+						console.log(`PROCESSED: ${sTranscript}`);
+						break;
+					}
+				}
 			}
 		}
 	}
 
-	speech.onerror = function (event) {
-		console.log(event);
+	let numbers = [];
+	for (let n = 0; n <= 180; n++) {
+		numbers.push(n);
+	}
+
+	const actions = ["ZURÜCK", "NEUES SPIEL", "NEUES SPIEL 501", "NEUES SPIEL 301"];
+
+	function isInGramar(sTranscript) {
+		console.log(`CHECKING: ${sTranscript}`)
+		if (Number.isInteger(Number(sTranscript))) {
+			const number = Number(sTranscript);
+			console.log(`INCLUDES IN NUMBER: ${numbers.includes(number)}`)
+			return numbers.includes(number);
+		} else {
+			const string = sTranscript.trim().toUpperCase();
+			console.log(`INCLUDES IN ACTIONS: ${actions.includes(string)}`)
+			return actions.includes(string);
+		}
+	};
+
+	speech.onaudiostart = function () {
+		console.log('Audio capturing started');
 	}
 
 	speech.onaudioend = function () {
 		console.log('Audio capturing ended');
 	}
 
+	speech.onsoundstart = function () {
+		console.log('Some sound is being received');
+	}
+
+	speech.onsoundend = function () {
+		console.log('Sound has stopped being received');
+	}
+
+	speech.onspeechstart = function () {
+		console.log('Speech has been detected');
+	}
+
 	speech.onspeechend = function () {
-		console.log('Speech ended');
+		console.log('Speech has stopped being detected');
+	}
+
+	speech.onstart = function () {
+		console.log('Speech recognition service has started');
 	}
 
 	speech.onend = function () {
-		console.log('Ended');
+		console.log('Speech recognition service disconnected');
 		this.start();
+	}
+
+	speech.onerror = function (event) {
+		console.log('Speech recognition error detected: ' + event.error);
 	}
 
 	const synth = window.speechSynthesis;
@@ -627,7 +674,7 @@ if ('webkitSpeechRecognition' in window) {
 			processScore(parseInt(sTranscript));
 		} else {
 			console.log("NO NUMBER");
-			processAction(sTranscript.trim());
+			processAction(sTranscript.trim().toUpperCase());
 		}
 	}
 
@@ -654,22 +701,22 @@ if ('webkitSpeechRecognition' in window) {
 
 	function processAction(sAction) {
 		switch (sAction) {
-			case "back":
+			case "ZURÜCK":
 				throws.pop();
 				updateCounter();
 				break;
-			case "reset":
+			case "NEUES SPIEL":
 				throws = [];
 				updateCounter();
 				gameOnSound.play();
 				break;
-			case "game 301":
+			case "NEUES SPIEL 301":
 				start = 301;
 				throws = [];
 				updateCounter()
 				gameOnSound.play();
 				break;
-			case "game 501":
+			case "NEUES SPIEL 501":
 				start = 501;
 				throws = [];
 				updateCounter();
@@ -689,7 +736,7 @@ if ('webkitSpeechRecognition' in window) {
 		average.textContent = `Ø ${getAverage().toFixed(1)}`;
 		// list
 		list.innerHTML = "";
-		throws.forEach((i) => {
+		throws.reverse().forEach((i) => {
 			const listNode = document.createElement("li");
 			listNode.textContent = i;
 			listNode.className = "list-group-item";
