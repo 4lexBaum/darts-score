@@ -22,6 +22,7 @@
 </head>
 
 <body>
+	<div class="view bg"></div>
 	<nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top">
 		<a class="navbar-brand"
 		 href="#">Darts Speech Score</a>
@@ -83,19 +84,21 @@
 	 class="container">
 
 		<div class="starter-template">
-			<h1>Say your Darts Score</h1>
-			<p class="lead">Say <em>reset</em> to go back to <b>501</b> and start a new game. With <em>back</em> you invalidate
+			<h1 class="text-light">Say your Darts Score</h1>
+			<p class="lead text-light">Say <em>reset</em> to go back to <b>501</b> and start a new game. With <em>back</em> you
+				invalidate
 				your
 				latest throw.</p>
 			<button id="startBtn"
 			 class="btn btn-primary">Game On</button>
-			<span id="voice"></span>
+			<span class="text-light"
+			 id="voice"></span>
 			<div id="game"
 			 style="display: none;">
 				<h1 id="counter"
-				 class="display-1">501</h1>
+				 class="display-1 text-light">501</h1>
 				<h5 id="average"
-				 class="display-5">Ø 0</h5>
+				 class="display-5 text-light">Ø 0</h5>
 				<div class="container">
 					<div id="checkouts"
 					 class="row">
