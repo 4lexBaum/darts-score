@@ -641,12 +641,11 @@ if ('webkitSpeechRecognition' in window) {
 
 	speech.onstart = function () {
 		console.log('Speech recognition service has started');
-		voice.textContent = "Speech recognition has started";
 	}
 
 	speech.onend = function () {
 		console.log('Speech recognition service disconnected');
-		voice.textContent = "Speech recognition has started";
+		voice.textContent = "";
 		this.start();
 	}
 
