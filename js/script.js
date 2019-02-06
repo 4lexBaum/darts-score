@@ -712,7 +712,7 @@ if ('webkitSpeechRecognition' in window) {
 	function processAction(sAction) {
 		switch (sAction) {
 			case "ZURÜCK":
-				throws.pop();
+				throws.shift();
 				updateCounter();
 				break;
 			case "NEUES SPIEL":
