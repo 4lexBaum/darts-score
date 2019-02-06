@@ -694,13 +694,13 @@ if ('webkitSpeechRecognition' in window) {
 				console.log("Bust");
 				noScoreSound.play();
 			} else if ((getRest() - score) === 0) {
-				throws.push(score);
+				throws.unshift(score);
 				updateCounter();
 				console.log("WIN");
 				gameShot.play();
 				return;
 			} else {
-				throws.push(score);
+				throws.unshift(score);
 				updateCounter();
 			}
 		} else {
@@ -746,7 +746,7 @@ if ('webkitSpeechRecognition' in window) {
 		average.textContent = `Ø ${getAverage().toFixed(1)}`;
 		// list
 		list.innerHTML = "";
-		throws.reverse().forEach((i) => {
+		throws.forEach((i) => {
 			const listNode = document.createElement("li");
 			listNode.textContent = i;
 			listNode.className = "list-group-item";
