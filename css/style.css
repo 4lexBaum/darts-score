@@ -3,7 +3,6 @@ html {
 }
 
 body {
-	height: 100%;
 	padding-top: 3rem;
 }
 
@@ -11,8 +10,7 @@ body {
 	position: absolute;
 	width: 100%;
 	height: calc(100% - 3rem);
-	background-image: url(https://mediafiles.urlaubsguru.de/wp-content/uploads/2016/07/drei-abnaeher-am-bulls-eye-nahaufnahme-istock-529249593-2.jpg);
-	background-repeat: no-repeat;
+	background-image: url(https://upload.wikimedia.org/wikipedia/commons/f/fb/Darts_in_a_dartboard.jpg);
 	background-size: cover;
 	background-position: center center;
 	filter: blur(2px);
@@ -25,7 +23,7 @@ body {
 	width: 100%;
 	height: 100%;
 	position: absolute;
-	background: rgba(255, 255, 255, 0.15);
+	background: rgba(0, 0, 0, 0.375);
 }
 
 .starter-template {
@@ -48,4 +46,8 @@ body {
 
 .container .list-group-item {
 	background-color: rgba(255, 255, 255, 0.7);
+}
+
+.dropdown-item:active {
+	background-color: #f6f7f8;
 }

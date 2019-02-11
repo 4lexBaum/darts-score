@@ -569,6 +569,7 @@ if ('webkitSpeechRecognition' in window) {
 	const gameShot = document.querySelector("#gameShot");
 	const playersMode = document.querySelector("#players");
 	const gameMode = document.querySelector("#mode");
+	const language = document.querySelector("#lang");
 
 	// fixed dom refs
 	const voice = document.querySelector("#voice");
@@ -605,7 +606,7 @@ if ('webkitSpeechRecognition' in window) {
 		numbers.push(n);
 	}
 
-	const actions = ["ZURÜCK", "NEUES SPIEL", "NEUES SPIEL 501", "NEUES SPIEL 301"];
+	const actions = ["NEUES SPIEL", "NEUES SPIEL 501", "NEUES SPIEL 301", "ZURÜCK", "BACK", "NEW GAME", "NEW GAME 501", "NEW GAME 301"];
 
 	function isInGramar(sTranscript) {
 		console.log(`CHECKING: ${sTranscript}`)
@@ -685,11 +686,18 @@ if ('webkitSpeechRecognition' in window) {
 		endGame();
 	};
 
+	function updateLanguage(speechLang, languageText) {
+		speech.lang = speechLang;
+		language.textContent = languageText;
+		endGame();
+	};
+
 	function createPlayerDom(number) {
 		const playerDiv = document.createElement("div");
 		playerDiv.id = `player-${number}`;
 		playerDiv.className = "col-sm";
 		const playerTitle = document.createElement("h3");
+		playerTitle.id = `player-${number}-title`;
 		playerTitle.className = "text-light";
 		playerTitle.appendChild(document.createTextNode(`Player ${number}`));
 		playerDiv.appendChild(playerTitle);
@@ -716,6 +724,7 @@ if ('webkitSpeechRecognition' in window) {
 
 	function Player(number) {
 		this.throws = [];
+		this.title = document.querySelector(`#player-${number}-title`);
 		this.counter = document.querySelector(`#player-${number}-counter`);
 		this.average = document.querySelector(`#player-${number}-average`);
 		this.list = document.querySelector(`#player-${number}-throws`);
@@ -746,14 +755,17 @@ if ('webkitSpeechRecognition' in window) {
 			const player = new Player(i);
 			players.push(player);
 		}
+
+		players.forEach(player => player.title.className = "text-light");
+		players[0].title.className = "text-light bg-danger";
 	}
 
 	function processTranscript(sTranscript) {
 
-		const player = players[rounds % playersAmount];
 
 		if (Number.isInteger(parseInt(sTranscript))) {
 			console.log("NUMBER");
+			const player = players[rounds % playersAmount];
 			processScore(player, parseInt(sTranscript));
 		} else {
 			console.log("NO NUMBER");
@@ -762,57 +774,63 @@ if ('webkitSpeechRecognition' in window) {
 	}
 
 	function processScore(player, score) {
-		if (score >= 0 && score <= 180) {
-			if ((player.getRest() - score) < 0 || (player.getRest() - score) === 1) {
-				console.log("Bust");
-				noScoreSound.play();
-				rounds++;
-			} else if ((player.getRest() - score) === 0) {
-				player.throws.unshift(score);
-				player.updateCounter();
-				console.log("WIN");
-				gameShot.play();
-				return;
-			} else {
-				player.throws.unshift(score);
-				player.updateCounter();
-				rounds++;
-			}
-		} else {
-			console.log(`No valid dart score: ${score}`);
+		if ((player.getRest() - score) < 0 || (player.getRest() - score) === 1) {
+			rounds++;
 			noScoreSound.play();
+			player.throws.unshift(0);
+			player.updateCounter();
+		} else if ((player.getRest() - score) === 0) {
+			gameShot.play();
+			player.throws.unshift(score);
+			player.updateCounter();
+		} else {
+			rounds++;
+			player.throws.unshift(score);
+			player.updateCounter();
 		}
 	}
 
 	function processAction(sAction) {
 		switch (sAction) {
-			case "ZURÜCK":
-				rounds--;
-				const player = players[rounds % playersAmount];
-				player.throws.shift();
-				player.updateCounter();
-				break;
-			/* case "NEUES SPIEL":
-				throws = [];
-				updateCounter();
-				gameOnSound.play();
-				break;
-			case "NEUES SPIEL 301":
-				start = 301;
-				throws = [];
-				updateCounter()
-				gameOnSound.play();
+			case "NEUES SPIEL":
+				startGame();
 				break;
 			case "NEUES SPIEL 501":
 				start = 501;
-				throws = [];
-				updateCounter();
-				gameOnSound.play();
-				break; */
+				startGame();
+				break;
+			case "NEUES SPIEL 301":
+				start = 301;
+				startGame();
+				break;
+			case "ZURÜCK":
+				back();
+				break;
+			case "NEW GAME":
+				startGame();
+				break;
+			case "NEW GAME 501":
+				start = 501;
+				startGame();
+				break;
+			case "NEW GAME 301":
+				start = 301;
+				startGame();
+				break;
+			case "BACK":
+				back();
+				break;
 
 			default:
 				break;
 		}
+	}
+
+	function back() {
+		rounds = (rounds - 1) >= 0 ? (rounds - 1) : 0;
+		const player = players[rounds % playersAmount];
+		player.throws.shift();
+		player.updateCounter();
 	}
 
 	function updateCounter() {
@@ -850,6 +868,9 @@ if ('webkitSpeechRecognition' in window) {
 			spanNode.className = "col-sm badge badge-warning";
 			this.checkoutsRow.appendChild(spanNode);
 		}
+
+		players.forEach(player => player.title.className = "text-light");
+		players[rounds % playersAmount].title.className = "text-light bg-danger";
 	};
 
 	function getRest() {

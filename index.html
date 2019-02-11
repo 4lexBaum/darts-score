@@ -8,6 +8,10 @@
 	<meta name="viewport"
 	 content="width=device-width">
 
+	<link rel="shortcut icon"
+	 type="image/x-icon"
+	 href="./img/favicon.ico">
+
 	<title>Darts Speech Score</title>
 
 	<!-- Bootstrap CSS -->
@@ -34,6 +38,14 @@
 <body>
 	<div class="view bg"></div>
 	<nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top">
+		<a class="navbar-brand"
+		 href="#">
+			<img src="./img/darts.png"
+			 style="filter: invert(100%);"
+			 width="25"
+			 height="25"
+			 alt="">
+		</a>
 		<a class="navbar-brand"
 		 href="#">Darts Speech Score</a>
 		<button class="navbar-toggler"
@@ -95,6 +107,26 @@
 						 onclick="updateGameMode(501)">501</a>
 					</div>
 				</li>
+				<li class="nav-item dropdown">
+					<a id="lang"
+					 class="nav-link dropdown-toggle"
+					 href="#"
+					 id="navbarDropdown"
+					 role="button"
+					 data-toggle="dropdown"
+					 aria-haspopup="true"
+					 aria-expanded="false">
+						Deutsch
+					</a>
+					<div class="dropdown-menu"
+					 aria-labelledby="navbarDropdown">
+						<a class="dropdown-item"
+						 onclick="updateLanguage('de-DE', 'Deutsch')">Deutsch</a>
+						<div class="dropdown-divider"></div>
+						<a class="dropdown-item"
+						 onclick="updateLanguage('en-US', 'English')">English</a>
+					</div>
+				</li>
 			</ul>
 		</div>
 	</nav>
@@ -110,7 +142,7 @@
 				latest throw.</p> -->
 			<button id="startBtn"
 			 onclick="startGame()"
-			 class="btn btn-primary btn-lg">Game On</button>
+			 class="btn btn-danger btn-lg">Game On</button>
 			<span class="text-light"
 			 id="voice"
 			 style="display: none;"></span>
