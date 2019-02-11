@@ -42,6 +42,9 @@ body {
 
 .container span {
 	margin: 0 0.5rem;
+	line-height: 1rem;
+	font-size: 1rem;
+	font-weight: normal;
 }
 
 .container .list-group-item {

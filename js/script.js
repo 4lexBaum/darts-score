@@ -743,7 +743,7 @@ if ('webkitSpeechRecognition' in window) {
 
 	function startGame() {
 		startBtn.style.display = "none";
-		voice.style.display = "inline-block";
+		voice.style.display = "inline";
 		game.style.display = "flex";
 		gameOnSound.play();
 
