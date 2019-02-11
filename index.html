@@ -19,6 +19,16 @@
 	<link rel="stylesheet"
 	 href="./css/style.css">
 
+	<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+	 integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+	 crossorigin="anonymous"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.6/umd/popper.min.js"
+	 integrity="sha384-wHAiFfRlMFy6i5SRaxvfOCifBUQy1xHdJ/yoi7FRNXMRBu5WHdZYu1hA6ZOblgut"
+	 crossorigin="anonymous"></script>
+	<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/js/bootstrap.min.js"
+	 integrity="sha384-B0UglyR+jN6CkvvICOB2joaf5I4l3gm9GU6Hc1og6Ls7i6U/mkkaduKaBhlAXv9k"
+	 crossorigin="anonymous"></script>
+
 </head>
 
 <body>
@@ -26,7 +36,7 @@
 	<nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top">
 		<a class="navbar-brand"
 		 href="#">Darts Speech Score</a>
-		<!-- <button class="navbar-toggler"
+		<button class="navbar-toggler"
 		 type="button"
 		 data-toggle="collapse"
 		 data-target="#navbarsExampleDefault"
@@ -34,80 +44,113 @@
 		 aria-expanded="false"
 		 aria-label="Toggle navigation">
 			<span class="navbar-toggler-icon"></span>
-		</button> -->
+		</button>
 
-		<!-- <div class="collapse navbar-collapse"
+		<div class="collapse navbar-collapse"
 		 id="navbarsExampleDefault">
 			<ul class="navbar-nav mr-auto">
-				<li class="nav-item active">
-					<a class="nav-link"
-					 href="#">Home <span class="sr-only">(current)</span></a>
-				</li>
-				<li class="nav-item">
-					<a class="nav-link"
-					 href="#">Link</a>
-				</li>
-				<li class="nav-item">
-					<a class="nav-link disabled"
-					 href="#">Disabled</a>
-				</li>
 				<li class="nav-item dropdown">
-					<a class="nav-link dropdown-toggle"
+					<a id="players"
+					 class="nav-link dropdown-toggle"
 					 href="#"
-					 id="dropdown01"
+					 id="navbarDropdown"
+					 role="button"
 					 data-toggle="dropdown"
 					 aria-haspopup="true"
-					 aria-expanded="false">Dropdown</a>
+					 aria-expanded="false">
+						1 Player
+					</a>
 					<div class="dropdown-menu"
-					 aria-labelledby="dropdown01">
+					 aria-labelledby="navbarDropdown">
 						<a class="dropdown-item"
-						 href="#">Action</a>
+						 onclick="updateAmountPlayer(1, '1 Player')">1 Player</a>
+						<div class="dropdown-divider"></div>
 						<a class="dropdown-item"
-						 href="#">Another action</a>
+						 onclick="updateAmountPlayer(2, '2 Players')">2 Players</a>
+						<div class="dropdown-divider"></div>
 						<a class="dropdown-item"
-						 href="#">Something else here</a>
+						 onclick="updateAmountPlayer(3, '3 Players')">3 Players</a>
+						<div class="dropdown-divider"></div>
+						<a class="dropdown-item"
+						 onclick="updateAmountPlayer(4, '4 Players')">4 Players</a>
+					</div>
+				</li>
+				<li class="nav-item dropdown">
+					<a id="mode"
+					 class="nav-link dropdown-toggle"
+					 href="#"
+					 id="navbarDropdown"
+					 role="button"
+					 data-toggle="dropdown"
+					 aria-haspopup="true"
+					 aria-expanded="false">
+						501
+					</a>
+					<div class="dropdown-menu"
+					 aria-labelledby="navbarDropdown">
+						<a class="dropdown-item"
+						 onclick="updateGameMode(301)">301</a>
+						<div class="dropdown-divider"></div>
+						<a class="dropdown-item"
+						 onclick="updateGameMode(501)">501</a>
 					</div>
 				</li>
 			</ul>
-			<form class="form-inline my-2 my-lg-0">
-				<input class="form-control mr-sm-2"
-				 type="text"
-				 placeholder="Search"
-				 aria-label="Search">
-				<button class="btn btn-secondary my-2 my-sm-0"
-				 type="submit">Search</button>
-			</form>
-		</div> -->
+		</div>
 	</nav>
 
 	<main role="main"
 	 class="container">
 
 		<div class="starter-template">
-			<h1 class="text-light">Say your Darts Score</h1>
-			<p class="lead text-light">Say <em>reset</em> to go back to <b>501</b> and start a new game. With <em>back</em> you
+			<!-- <h1 class="text-light">Say your Darts Score</h1> -->
+			<!-- <p class="lead text-light">Say <em>reset</em> to go back to <b>501</b> and start a new game. With <em>back</em> you
 				invalidate
 				your
-				latest throw.</p>
+				latest throw.</p> -->
 			<button id="startBtn"
-			 class="btn btn-primary">Game On</button>
+			 onclick="startGame()"
+			 class="btn btn-primary btn-lg">Game On</button>
 			<span class="text-light"
-			 id="voice"></span>
+			 id="voice"
+			 style="display: none;"></span>
 			<div id="game"
+			 class="row mt-3"
 			 style="display: none;">
-				<h1 id="counter"
-				 class="display-1 text-light">501</h1>
-				<h5 id="average"
-				 class="display-5 text-light">Ø 0</h5>
-				<div class="container">
-					<div id="checkouts"
-					 class="row">
+				<!-- <div id="player1"
+				 class="col-sm">
+					<h3 class="text-light">Player 1</h3>
+					<h1 id="counter-player-1"
+					 class="display-1 text-light">501</h1>
+					<h5 id="average-player-1"
+					 class="display-5 text-light">Ø 0</h5>
+					<div class="container">
+						<div id="checkouts-player-1"
+						 class="row">
+						</div>
 					</div>
+					<ul id="list-player-1"
+					 class="list-group list-group-flush">
+					</ul>
 				</div>
-				<ul id="list"
-				 class="list-group list-group-flush">
-
-				</ul>
+				<div id="player2"
+				 class="col-sm">
+					<h3 class="text-light">Player 2</h3>
+					<div>
+						<h1 id="counter-player-2"
+						 class="display-1 text-light">501</h1>
+						<h5 id="average-player-2"
+						 class="display-5 text-light">Ø 0</h5>
+						<div class="container">
+							<div id="checkouts-player-2"
+							 class="row">
+							</div>
+						</div>
+						<ul id="list-player-2"
+						 class="list-group list-group-flush">
+						</ul>
+					</div>
+				</div> -->
 			</div>
 			<audio id="noScoreSounc"
 			 src="./soundpack/00.mp3"></audio>

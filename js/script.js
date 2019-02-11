@@ -1,5 +1,6 @@
 if ('webkitSpeechRecognition' in window) {
 
+	// checkouts
 	const checkouts = {
 		"170": [
 			"20",
@@ -562,6 +563,19 @@ if ('webkitSpeechRecognition' in window) {
 		]
 	}
 
+	// sounds
+	const noScoreSound = document.querySelector("#noScoreSounc");
+	const gameOnSound = document.querySelector("#gameOnSound");
+	const gameShot = document.querySelector("#gameShot");
+	const playersMode = document.querySelector("#players");
+	const gameMode = document.querySelector("#mode");
+
+	// fixed dom refs
+	const voice = document.querySelector("#voice");
+	const startBtn = document.querySelector("#startBtn");
+	const game = document.querySelector("#game");
+
+	// speech recognition
 	const speech = new webkitSpeechRecognition();
 	speech.lang = "de-DE";
 	speech.continuous = false;
@@ -605,8 +619,6 @@ if ('webkitSpeechRecognition' in window) {
 			return actions.includes(string);
 		}
 	};
-
-	const voice = document.querySelector("#voice");
 
 	speech.onaudiostart = function () {
 		console.log('Audio capturing started');
@@ -653,55 +665,118 @@ if ('webkitSpeechRecognition' in window) {
 		console.log('Speech recognition error detected: ' + event.error);
 	}
 
-	const synth = window.speechSynthesis;
+	// darts
 
 	let start = 501;
+	let playersAmount = 1;
+	let rounds = 1;
+	let players = [];
 	const BOGEYS = [169, 168, 166, 165, 163, 162, 159];
-	let throws = [];
 
-	const counter = document.querySelector("#counter");
-	const average = document.querySelector("#average");
-	const list = document.querySelector("#list");
-	const startBtn = document.querySelector("#startBtn");
-	const game = document.querySelector("#game");
+	function updateAmountPlayer(newPlayersAmount, playersText) {
+		playersAmount = newPlayersAmount;
+		playersMode.textContent = playersText;
+		endGame();
+	};
 
+	function updateGameMode(newStart) {
+		start = newStart;
+		gameMode.textContent = start;
+		endGame();
+	};
 
-	const noScoreSound = document.querySelector("#noScoreSounc");
-	const gameOnSound = document.querySelector("#gameOnSound");
-	const gameShot = document.querySelector("#gameShot");
-	const checkoutsRow = document.querySelector("#checkouts");
+	function createPlayerDom(number) {
+		const playerDiv = document.createElement("div");
+		playerDiv.id = `player-${number}`;
+		playerDiv.className = "col-sm";
+		const playerTitle = document.createElement("h3");
+		playerTitle.className = "text-light";
+		playerTitle.appendChild(document.createTextNode(`Player ${number}`));
+		playerDiv.appendChild(playerTitle);
+		const playerCounter = document.createElement("h1");
+		playerCounter.id = `player-${number}-counter`;
+		playerCounter.className = "display-1 text-light";
+		playerCounter.appendChild(document.createTextNode(start));
+		playerDiv.appendChild(playerCounter);
+		const playerAverage = document.createElement("h5");
+		playerAverage.id = `player-${number}-average`;
+		playerAverage.className = "display-5 text-light";
+		playerAverage.appendChild(document.createTextNode("Ø 0"));
+		playerDiv.appendChild(playerAverage);
+		const playerCheckouts = document.createElement("div");
+		playerCheckouts.id = `player-${number}-checkouts`;
+		playerCheckouts.className = "row mx-0 mb-3";
+		playerDiv.appendChild(playerCheckouts);
+		const playerThrows = document.createElement("ul");
+		playerThrows.id = `player-${number}-throws`;
+		playerThrows.className = "list-group list-group-flush";
+		playerDiv.appendChild(playerThrows);
+		return playerDiv;
+	}
 
-	startBtn.onclick = () => {
-		speech.start();
+	function Player(number) {
+		this.throws = [];
+		this.counter = document.querySelector(`#player-${number}-counter`);
+		this.average = document.querySelector(`#player-${number}-average`);
+		this.list = document.querySelector(`#player-${number}-throws`);
+		this.checkoutsRow = document.querySelector(`#player-${number}-checkouts`);
+		this.updateCounter = updateCounter;
+		this.getRest = getRest;
+		this.getAverage = getAverage;
+	}
+
+	function endGame() {
+		speech.stop();
+		startBtn.style.display = "inline-block";
+		voice.style.display = "none";
+		game.style.display = "none";
+	}
+
+	function startGame() {
 		startBtn.style.display = "none";
-		game.style.display = "block";
+		voice.style.display = "inline-block";
+		game.style.display = "flex";
 		gameOnSound.play();
+
+		game.innerHTML = "";
+		players = [];
+		rounds = 0;
+		for (let i = 1; i <= playersAmount; i++) {
+			game.appendChild(createPlayerDom(i));
+			const player = new Player(i);
+			players.push(player);
+		}
 	}
 
 	function processTranscript(sTranscript) {
+
+		const player = players[rounds % playersAmount];
+
 		if (Number.isInteger(parseInt(sTranscript))) {
 			console.log("NUMBER");
-			processScore(parseInt(sTranscript));
+			processScore(player, parseInt(sTranscript));
 		} else {
 			console.log("NO NUMBER");
 			processAction(sTranscript.trim().toUpperCase());
 		}
 	}
 
-	function processScore(score) {
+	function processScore(player, score) {
 		if (score >= 0 && score <= 180) {
-			if ((getRest() - score) < 0 || (getRest() - score) === 1) {
+			if ((player.getRest() - score) < 0 || (player.getRest() - score) === 1) {
 				console.log("Bust");
 				noScoreSound.play();
-			} else if ((getRest() - score) === 0) {
-				throws.unshift(score);
-				updateCounter();
+				rounds++;
+			} else if ((player.getRest() - score) === 0) {
+				player.throws.unshift(score);
+				player.updateCounter();
 				console.log("WIN");
 				gameShot.play();
 				return;
 			} else {
-				throws.unshift(score);
-				updateCounter();
+				player.throws.unshift(score);
+				player.updateCounter();
+				rounds++;
 			}
 		} else {
 			console.log(`No valid dart score: ${score}`);
@@ -712,10 +787,12 @@ if ('webkitSpeechRecognition' in window) {
 	function processAction(sAction) {
 		switch (sAction) {
 			case "ZURÜCK":
-				throws.shift();
-				updateCounter();
+				rounds--;
+				const player = players[rounds % playersAmount];
+				player.throws.shift();
+				player.updateCounter();
 				break;
-			case "NEUES SPIEL":
+			/* case "NEUES SPIEL":
 				throws = [];
 				updateCounter();
 				gameOnSound.play();
@@ -731,7 +808,7 @@ if ('webkitSpeechRecognition' in window) {
 				throws = [];
 				updateCounter();
 				gameOnSound.play();
-				break;
+				break; */
 
 			default:
 				break;
@@ -739,21 +816,21 @@ if ('webkitSpeechRecognition' in window) {
 	}
 
 	function updateCounter() {
-		const rest = getRest();
+		const rest = this.getRest();
 		// counter
-		counter.textContent = rest;
+		this.counter.textContent = rest;
 		// average
-		average.textContent = `Ø ${getAverage().toFixed(1)}`;
+		this.average.textContent = `Ø ${this.getAverage().toFixed(1)}`;
 		// list
-		list.innerHTML = "";
-		throws.forEach((i) => {
+		this.list.innerHTML = "";
+		this.throws.forEach((i) => {
 			const listNode = document.createElement("li");
 			listNode.textContent = i;
 			listNode.className = "list-group-item";
-			list.appendChild(listNode);
+			this.list.appendChild(listNode);
 		});
 
-		checkoutsRow.innerHTML = "";
+		this.checkoutsRow.innerHTML = "";
 		if (rest <= 170 && rest >= 41) {
 			const checkout = checkouts[rest.toString()];
 			if (checkout) {
@@ -763,7 +840,7 @@ if ('webkitSpeechRecognition' in window) {
 					const spanNode = document.createElement("span");
 					spanNode.textContent = c;
 					spanNode.className = "col-sm badge badge-success";
-					checkoutsRow.appendChild(spanNode);
+					this.checkoutsRow.appendChild(spanNode);
 				});
 			}
 		}
@@ -771,16 +848,18 @@ if ('webkitSpeechRecognition' in window) {
 			const spanNode = document.createElement("span");
 			spanNode.textContent = "Bogey";
 			spanNode.className = "col-sm badge badge-warning";
-			checkoutsRow.appendChild(spanNode);
+			this.checkoutsRow.appendChild(spanNode);
 		}
 	};
 
 	function getRest() {
-		return start - throws.reduce((a, b) => a + b, 0);
+		return start - this.throws.reduce((a, b) => a + b, 0);
 	};
 
 	function getAverage() {
-		return throws.length > 0 ? throws.reduce((a, b) => a + b) / throws.length : 0;
+		return this.throws.length > 0 ? this.throws.reduce((a, b) => a + b) / this.throws.length : 0;
 	};
+
+	speech.start();
 
 }
